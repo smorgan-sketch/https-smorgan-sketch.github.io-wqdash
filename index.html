@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>White Clay Creek Watershed – Water Quality Dashboard</title>
+<title>White Clay Watershed Association – Water Quality Dashboard</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" crossorigin="anonymous"></script>
@@ -114,6 +114,7 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
 
 /* OVERVIEW */
 .ov-cw{height:175px;margin-bottom:12px;}
+.net-caveat{font-size:.66rem;color:var(--caution);font-style:italic;line-height:1.4;margin:2px 0 10px;}
 .ov-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
 .ovs{background:var(--bg);border-radius:8px;padding:8px 10px;text-align:center;}
 .ovs .ov{font-size:1.25rem;font-weight:700;}
@@ -204,7 +205,7 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
   <div class="hlogo">
     <img id="wcwaLogo" alt="WCWA Logo" style="height:56px;width:56px;object-fit:contain;border-radius:50%;background:#fff;padding:2px;flex-shrink:0;">
     <div>
-      <h1>White Clay Creek Watershed</h1>
+      <h1>White Clay Watershed Association</h1>
       <p>Water Quality Monitoring Dashboard</p>
     </div>
   </div>
@@ -259,31 +260,33 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
 
     <!-- OVERVIEW -->
     <div class="panel active" id="panel-overview">
-      <div class="sdiv">E. coli Network Trend (Annual Geo Mean)</div>
+      <div class="sdiv">E. coli Network Trend (Annual Geo Mean, All Sites)</div>
       <div class="ov-cw"><canvas id="ovEcoliChart"></canvas></div>
-      <div class="ov-grid" id="ovStats"></div>
+      <p class="net-caveat">⚠ Site network has grown and changed over time (19 sites in 2016 → 32 in 2025) — earlier years reflect fewer monitored sites. See Methodology.</p>
 
-      <div class="sdiv">Enterococcus Network Trend (Annual Geo Mean)</div>
+      <div class="sdiv">Enterococcus Network Trend (Annual Geo Mean, All Sites)</div>
       <div class="ov-cw"><canvas id="ovEntChart"></canvas></div>
-      <div class="ov-grid" id="ovEntStats"></div>
+      <p class="net-caveat">⚠ Site network has grown and changed over time (19 sites in 2016 → 32 in 2025) — earlier years reflect fewer monitored sites. See Methodology.</p>
 
-      <div class="sdiv">NO₃-N Trend (mg/L) — Monthly Avg across lab sites</div>
+      <div class="sdiv">NO₃-N Trend (mg/L) — Annual Average, All Lab Sites</div>
       <div class="cw"><canvas id="ovNO3Chart"></canvas></div>
-      <div class="ov-grid" id="ovNO3Stats"></div>
+      <p class="net-caveat">⚠ Site network has grown and changed over time (4 sites in 2018 → 10 in 2025) — earlier years reflect fewer monitored sites. See Methodology.</p>
 
-      <div class="sdiv">Ortho-Phosphorus Trend (mg/L)</div>
+      <div class="sdiv">Ortho-Phosphorus Trend (mg/L) — Annual Average, All Lab Sites</div>
       <div class="cw"><canvas id="ovOPChart"></canvas></div>
-      <div class="ov-grid" id="ovOPStats"></div>
+      <p class="net-caveat">⚠ Site network has grown and changed over time (4 sites in 2018 → 10 in 2025) — earlier years reflect fewer monitored sites. See Methodology.</p>
 
-      <div class="sdiv">Chloride Trend (mg/L)</div>
+      <div class="sdiv">Chloride Trend (mg/L) — Annual Average, All Lab Sites</div>
       <div class="cw"><canvas id="ovCLChart"></canvas></div>
-      <div class="ov-grid" id="ovCLStats"></div>
+      <p class="net-caveat">⚠ Site network has grown and changed over time (4 sites in 2018 → 10 in 2025) — earlier years reflect fewer monitored sites. See Methodology.</p>
 
-      <div class="sdiv">Water Temperature Trend (°C)</div>
+      <div class="sdiv">Water Temperature Trend (°C) — Annual Average, All Sensor Sites</div>
       <div class="cw"><canvas id="ovWTChart"></canvas></div>
+      <p class="net-caveat">⚠ Site network has grown and changed over time (29 sites in 2018 → 35 in 2025) — earlier years reflect fewer monitored sites. See Methodology.</p>
 
-      <div class="sdiv">Conductivity Trend (µS/cm)</div>
+      <div class="sdiv">Conductivity Trend (µS/cm) — Annual Average, All Sensor Sites</div>
       <div class="cw"><canvas id="ovCNDChart"></canvas></div>
+      <p class="net-caveat">⚠ Site network has grown and changed over time (29 sites in 2018 → 35 in 2025) — earlier years reflect fewer monitored sites. See Methodology.</p>
 
       <p style="font-size:.7rem;color:var(--muted);margin-top:10px">
         Click any map marker to view site details &amp; trends. Use the layer toggle (top-left of map) to visualize different parameters.
@@ -355,6 +358,9 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
 
         <div class="sdiv" style="margin-top:12px">Salt Snapshot Program</div>
         <p>Winter road-salt surveys (January–February) measure chloride and conductivity at additional sub-basin locations beyond the regular monitoring network. These sites (designated with _A, _B suffixes) appear on the Chloride map layer and in site reports but may have limited data — only the winter snapshot readings.</p>
+
+        <div class="sdiv" style="margin-top:12px">Overview Tab — Network Growth Over Time</div>
+        <p>The Overview tab's network-wide trend charts show a genuine watershed-wide signal over time, but they are <strong>not a fixed set of the same sites year to year</strong> — the monitoring network has grown substantially since these programs began. Bacteria sampling grew from <strong>19 sites in 2016 to 32 in 2025</strong>; sensor sites (water temp and conductivity) grew from <strong>29 sites in 2018 to 35 in 2025</strong>; and lab chemistry sites (NO₃-N, Ortho-P, Chloride) grew from just <strong>4 sites in 2018 to 10 in 2025</strong>, with several added in 2025 alone. As a result, a rise or fall in a network trend line can reflect newly added sites rather than a true watershed-wide change — the chart can't distinguish between the two. Treat these charts as a general network-wide signal rather than a strict year-over-year comparison. The <strong>per-site trend charts</strong> on the Site tab track the same location consistently over time and are the more reliable choice for tracking change at a single site.</p>
 
         <div class="sdiv" style="margin-top:12px">Data Sources</div>
         <ul style="margin:4px 0 4px 16px">
@@ -730,14 +736,17 @@ function mkLine(id, labels, datasets, opts={}){
   }]);
 
   // Water temp
-  const wtd = DATA.overall_wt.filter(r=>r.WT!==null);
+  // Pre-2018 readings were summer-only (sparse seasonal coverage), which skews the
+  // early years warm relative to later years' full-season sampling — start in 2018.
+  const wtd = DATA.overall_wt.filter(r=>r.WT!==null && r.Date>='2018');
   mkLine('ovWTChart', wtd.map(r=>r.Date), [{
     label:'Avg WT (°C)', data:wtd.map(r=>r.WT),
     borderColor:'#e67e22', backgroundColor:'rgba(230,126,34,.1)', fill:true, tension:.35, pointRadius:2
   }]);
 
   // Conductivity
-  const cndd = DATA.overall_cnd.filter(r=>r.CND!==null);
+  // Pre-2018 readings were sparse/seasonal (same limited coverage issue as water temp) — start in 2018.
+  const cndd = DATA.overall_cnd.filter(r=>r.CND!==null && r.Date>='2018');
   mkLine('ovCNDChart', cndd.map(r=>r.Date), [{
     label:'Avg CND (µS/cm)', data:cndd.map(r=>r.CND),
     borderColor:'#8e44ad', backgroundColor:'rgba(142,68,173,.1)', fill:true, tension:.35, pointRadius:2
@@ -757,58 +766,6 @@ function mkLine(id, labels, datasets, opts={}){
     borderColor:'#d35400', backgroundColor:'rgba(211,84,0,.1)', fill:true, tension:.35, pointRadius:2
   }]);
 
-  // E. coli status grid
-  const withEc = DATA.sites.filter(s=>s.ecoli!=null);
-  const good   = withEc.filter(s=>s.ecoli<126).length;
-  const caut   = withEc.filter(s=>s.ecoli>=126&&s.ecoli<630).length;
-  const bad    = withEc.filter(s=>s.ecoli>=630).length;
-  document.getElementById('ovStats').innerHTML = `
-    <div class="ovs"><div class="ov good-t">${good}</div><div class="ol">Sites – Grade A (E. coli &lt;126)</div></div>
-    <div class="ovs"><div class="ov caut-t">${caut}</div><div class="ol">Sites – Grade A–/B (126–630)</div></div>
-    <div class="ovs"><div class="ov bad-t">${bad}</div><div class="ol">Sites – Grade C–F (≥630)</div></div>
-    <div class="ovs"><div class="ov">${DATA.sites.filter(s=>!s.ecoli).length}</div><div class="ol">Sites – No Bac Data</div></div>`;
-
-  // Enterococcus status grid
-  const withEn = DATA.sites.filter(s=>s.ent!=null);
-  const enA  = withEn.filter(s=>s.ent<35).length;
-  const enAB = withEn.filter(s=>s.ent>=35&&s.ent<315).length;
-  const enBad= withEn.filter(s=>s.ent>=315).length;
-  document.getElementById('ovEntStats').innerHTML = `
-    <div class="ovs"><div class="ov good-t">${enA}</div><div class="ol">Sites – Grade A (&lt;35)</div></div>
-    <div class="ovs"><div class="ov caut-t">${enAB}</div><div class="ol">Sites – Grade A–/C (35–315)</div></div>
-    <div class="ovs"><div class="ov bad-t">${enBad}</div><div class="ol">Sites – Grade D–F (≥315)</div></div>
-    <div class="ovs"><div class="ov">${DATA.sites.filter(s=>!s.ent).length}</div><div class="ol">Sites – No Data</div></div>`;
-
-  // NO3-N status grid
-  const withNo3 = DATA.sites.filter(s=>s.no3n!=null);
-  const no3Good = withNo3.filter(s=>s.no3n<=3).length;
-  const no3Bad  = withNo3.filter(s=>s.no3n>3).length;
-  document.getElementById('ovNO3Stats').innerHTML = `
-    <div class="ovs"><div class="ov good-t">${no3Good}</div><div class="ol">Sites Meeting Standard (≤3 mg/L)</div></div>
-    <div class="ovs"><div class="ov bad-t">${no3Bad}</div><div class="ol">Sites Exceeding Standard (&gt;3 mg/L)</div></div>
-    <div class="ovs"><div class="ov">${withNo3.length>0?(withNo3.reduce((a,s)=>a+s.no3n,0)/withNo3.length).toFixed(2):'-'}</div><div class="ol">Avg NO₃-N (mg/L) latest</div></div>
-    <div class="ovs"><div class="ov">${DATA.sites.filter(s=>!s.no3n).length}</div><div class="ol">Sites – No Lab Data</div></div>`;
-
-  // Ortho-P status grid
-  const withOP = DATA.sites.filter(s=>s.op!=null);
-  const opGood = withOP.filter(s=>s.op<=0.1).length;
-  const opBad  = withOP.filter(s=>s.op>0.1).length;
-  document.getElementById('ovOPStats').innerHTML = `
-    <div class="ovs"><div class="ov good-t">${opGood}</div><div class="ol">Sites Meeting Standard (≤0.1 mg/L)</div></div>
-    <div class="ovs"><div class="ov bad-t">${opBad}</div><div class="ol">Sites Exceeding Standard (&gt;0.1 mg/L)</div></div>
-    <div class="ovs"><div class="ov">${withOP.length>0?(withOP.reduce((a,s)=>a+s.op,0)/withOP.length).toFixed(3):'-'}</div><div class="ol">Avg Ortho-P (mg/L) latest</div></div>
-    <div class="ovs"><div class="ov">${DATA.sites.filter(s=>!s.op).length}</div><div class="ol">Sites – No Lab Data</div></div>`;
-
-  // Chloride status grid
-  const withCl = DATA.sites.filter(s=>s.cl!=null);
-  const clSafe = withCl.filter(s=>s.cl<50).length;
-  const clHarm = withCl.filter(s=>s.cl>=50&&s.cl<230).length;
-  const clMost = withCl.filter(s=>s.cl>=230).length;
-  document.getElementById('ovCLStats').innerHTML = `
-    <div class="ovs"><div class="ov good-t">${clSafe}</div><div class="ol">Sites Safe (&lt;50 mg/L)</div></div>
-    <div class="ovs"><div class="ov caut-t">${clHarm}</div><div class="ol">Sites Harmful (50–230 mg/L)</div></div>
-    <div class="ovs"><div class="ov bad-t">${clMost}</div><div class="ol">Sites Most Harmful (≥230 mg/L)</div></div>
-    <div class="ovs"><div class="ov">${DATA.sites.filter(s=>!s.cl).length}</div><div class="ol">Sites – No CL Data</div></div>`;
 })();
 
 // ===== SITE DETAIL =====
