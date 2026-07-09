@@ -224,6 +224,11 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
 </header>
 
 <div class="stats-bar" id="statsBar">
+  <div class="sc" style="background:var(--primary)">
+    <div class="lb" id="stat0lb" style="color:rgba(255,255,255,.75)">–</div>
+    <div class="vl" id="stat0vl" style="color:#fff">–</div>
+    <div class="sb" id="stat0sb" style="color:rgba(255,255,255,.75)">–</div>
+  </div>
   <div class="sc" id="stat1"><div class="lb" id="stat1lb">–</div><div class="vl" id="stat1vl">–</div><div class="sb" id="stat1sb">–</div></div>
   <div class="sc" id="stat2"><div class="lb" id="stat2lb">–</div><div class="vl" id="stat2vl">–</div><div class="sb" id="stat2sb">–</div></div>
   <div class="sc" id="stat3"><div class="lb" id="stat3lb">–</div><div class="vl" id="stat3vl">–</div><div class="sb" id="stat3sb">–</div></div>
@@ -467,6 +472,21 @@ function updateStatsBar(layer){
   }
   function avg(arr){ return arr.length ? (arr.reduce((a,b)=>a+b,0)/arr.length) : null; }
   function pct(arr, fn){ const w=arr.filter(s=>s!==null&&s!==undefined); return w.length ? Math.round(w.filter(fn).length/w.length*100)+'%':'–'; }
+
+  // Now-showing card — always first, states which parameter the map & stats below reflect
+  const layerInfo = {
+    ecoli: {name:'E. coli',       unit:'CFU/100mL', method:'Annual geo mean'},
+    ent:   {name:'Enterococcus',  unit:'CFU/100mL', method:'Annual geo mean'},
+    no3n:  {name:'NO₃-N',         unit:'mg/L',       method:'12-mo. average'},
+    op:    {name:'Ortho-P',       unit:'mg/L',       method:'12-mo. average'},
+    cl:    {name:'Chloride',      unit:'mg/L',       method:'Individual samples'},
+    wt:    {name:'Water Temp',    unit:'°C',         method:'12-mo. average'},
+    cnd:   {name:'Conductivity',  unit:'µS/cm',      method:'12-mo. average'}
+  };
+  const li = layerInfo[layer] || {name:layer, unit:'', method:''};
+  document.getElementById('stat0lb').textContent = 'Map Showing';
+  document.getElementById('stat0vl').textContent = li.name;
+  document.getElementById('stat0sb').textContent = [li.unit, li.method].filter(Boolean).join(' · ');
 
   if(layer==='ecoli'){
     const ec = S.map(s=>s.ecoli).filter(v=>v!=null);
