@@ -204,7 +204,7 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
     <img id="wildScenicLogo" alt="White Clay Wild &amp; Scenic River Logo" style="height:56px;width:auto;object-fit:contain;flex-shrink:0;background:#fff;padding:3px 6px;border-radius:6px;">
     <div>
       <h1>White Clay Watershed Association</h1>
-      <p>Water Quality Monitoring Dashboard</p>
+      <p style="font-weight:700">Water Quality Data Hub</p>
     </div>
   </div>
   <div class="hright">
@@ -295,13 +295,14 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
     <!-- RANKINGS -->
     <div class="panel" id="panel-ranking">
       <div class="sdiv">Site Rankings by Parameter</div>
-      <select class="csel" id="rankParamSel" onchange="buildRankings(this.value)" style="margin-bottom:8px">
+      <select class="csel" id="rankParamSel" onchange="setLayer(this.value)" style="margin-bottom:8px">
         <option value="ecoli">E. coli — % years grade C–F (≥630)</option>
         <option value="ent">Enterococcus — % years grade D–F (≥315)</option>
         <option value="no3n">NO₃-N — % months exceeding 3 mg/L</option>
         <option value="cl">Chloride — % months exceeding 50 mg/L</option>
         <option value="op">Ortho-P — % months exceeding 0.1 mg/L</option>
         <option value="wt">Water Temp — % months exceeding 24°C</option>
+        <option value="cnd">Conductivity — % months exceeding 700 µS/cm</option>
       </select>
       <p style="font-size:.7rem;color:var(--muted);margin-bottom:10px" id="rankDesc"></p>
       <div id="rankList"></div>
@@ -315,7 +316,9 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
         <p style="margin-bottom:10px"><strong>Map dot colors</strong> represent <em>annual averages</em> for each site and parameter, with two exceptions noted below. For bacteria (E. coli and Enterococcus), the dot color reflects the <strong>most recent annual geometric mean</strong> (e.g., the 2025 summer geo mean). For lab chemistry (NO₃-N, Ortho-P, Chloride), dots reflect the <strong>yearly average of all monthly samples</strong> for the most recent year with data. <strong>Conductivity and Water Temp are the exceptions:</strong> Conductivity dots reflect the most recent single field reading at each site, since conductivity can spike sharply after events like winter road salting. Water Temp dots reflect the <strong>highest June–August reading from the most recent summer with data</strong> at each site (compared against that site's designated-use standard for the month it was taken) — this keeps every site on the same, most-telling season rather than mixing a July reading at one site with a January reading at another. Sites with no June–August reading on record show grey; their full temperature history is still available on the Site tab.</p>
 
         <div class="sdiv" style="margin-top:12px">Bacteria (E. coli &amp; Enterococcus)</div>
-        <p>Bacteria data are summarized as <strong>annual summer geometric means</strong> (May–October sampling season), computed from individual grab samples collected at each site each year. Geometric means are used rather than arithmetic means because bacteria concentrations are log-normally distributed — the geometric mean better represents the central tendency of the distribution and is the standard metric used by state water quality agencies.</p>
+        <p><strong>Why we measure it.</strong> <strong>E. coli</strong> and <strong>Enterococcus</strong> are indicator bacteria used to estimate the risk of fecal contamination — and the pathogens that can come with it — in water people and pets may wade, swim, or fish in. E. coli is tracked as the standard indicator for freshwater streams; Enterococcus is more salt-tolerant and is the standard indicator used in tidal and coastal waters, so tracking both gives a fuller picture of contamination risk across the watershed.</p>
+        <p style="margin-top:6px"><strong>What is CFU?</strong> CFU stands for Colony-Forming Unit, a term used in microbiology to estimate the number of living, active bacteria or fungi in a sample that are capable of growing and multiplying. Instead of counting individual microscopic cells, scientists grow them on a culture plate where each living organism forms a visible colony that can be counted.</p>
+        <p style="margin-top:6px">Bacteria data are summarized as <strong>annual summer geometric means</strong> (May–October sampling season), computed from individual grab samples collected at each site each year. Geometric means are used rather than arithmetic means because bacteria concentrations are log-normally distributed — the geometric mean better represents the central tendency of the distribution and is the standard metric used by state water quality agencies.</p>
         <p style="margin-top:6px">Grading follows the <em>WCC State of the Watershed Methodology (2024)</em>:</p>
         <table style="width:100%;border-collapse:collapse;font-size:.75rem;margin:6px 0">
           <tr style="background:var(--bg)"><th style="padding:4px 8px;text-align:left">Grade</th><th>E. coli (CFU/100mL)</th><th>Enterococcus (CFU/100mL)</th></tr>
@@ -329,15 +332,17 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
         <p style="margin-top:4px">The <strong>goals</strong> on site reports are ≤126 CFU/100mL for E. coli and ≤35 CFU/100mL for Enterococcus.</p>
 
         <div class="sdiv" style="margin-top:12px">Lab Chemistry (NO₃-N, Ortho-P, Chloride)</div>
-        <p>Monthly grab samples are analyzed at a certified laboratory. Each point on the site trend charts represents a <strong>single monthly sample</strong>. The network-wide overview chart shows the <strong>annual average</strong> across all actively sampled sites for that year. Standards referenced:</p>
+        <p><strong>Why we measure these.</strong> <strong>Nitrate (NO₃-N)</strong> and <strong>Orthophosphate (Ortho-P)</strong> are nutrients that run off from fertilizer, stormwater, septic systems, and wastewater; in excess they fuel algal growth that depletes oxygen and degrades habitat for fish and other aquatic life. <strong>Chloride</strong> is a marker of winter road salt, water softener discharge, and other human sources — it doesn't break down in the environment, can persist in groundwater and streams long after it's applied, and is toxic to sensitive aquatic organisms at chronically elevated levels.</p>
+        <p style="margin-top:6px">Monthly grab samples are analyzed at a certified laboratory. Each point on the site trend charts represents a <strong>single monthly sample</strong>. The network-wide overview chart shows the <strong>annual average</strong> across all actively sampled sites for that year. Standards referenced:</p>
         <ul style="margin:4px 0 4px 16px">
           <li><strong>NO₃-N:</strong> 3 mg/L (PADEP)</li>
           <li><strong>Ortho-P:</strong> 0.1 mg/L (PADEP)</li>
           <li><strong>Chloride:</strong> &lt;50 mg/L safe; 50–120 mg/L harmful begins; 120–230 mg/L harmful; &gt;230 mg/L most harmful (WCC standards)</li>
         </ul>
 
-        <div class="sdiv" style="margin-top:12px">Field Sensor Data (Water Temp &amp; Conductivity)</div>
-        <p>Water temperature and conductivity are measured in the field at each visit using a calibrated multiparameter sonde. Values shown on site reports are <strong>monthly averages</strong> of all readings taken at that site in a given month. Data come from the WCWS Field Sensor Master files (2017–2025) supplemented by field readings recorded during bacteria sampling visits.</p>
+        <div class="sdiv" style="margin-top:12px">In-Stream Measurements (Water Temp &amp; Conductivity)</div>
+        <p><strong>Why we measure these.</strong> <strong>Water temperature</strong> governs which species of fish and macroinvertebrates a stream can support and how much dissolved oxygen the water can hold — warmer water holds less oxygen, so tracking temperature helps identify thermal stress from stormwater runoff, loss of streamside shade, or other disturbances. <strong>Conductivity</strong> is an early-warning indicator: because it responds quickly to inputs like road salt, fertilizer runoff, and wastewater, a sudden rise can flag a pollutant source before it's visible any other way.</p>
+        <p style="margin-top:6px">Water temperature and conductivity are measured in the field at each visit using a calibrated multiparameter sonde. Values shown on site reports are <strong>monthly averages</strong> of all readings taken at that site in a given month. Data come from the WCWS Field Sensor Master files (2017–2025) supplemented by field readings recorded during bacteria sampling visits.</p>
         <p style="margin-top:6px"><strong>Water temperature standards by designated use.</strong> Streams are assigned a "designated use" by state regulators that sets how warm the water is allowed to get, month by month — a Cold Water or Trout Stocked stream has a much stricter (lower) limit than a Warm Water stream, especially in summer. The map layer evaluates each site's <strong>highest June–August reading from the most recent summer with data</strong> against the standard for that site's designated use, in the month it was taken — sites with no summer reading show grey on the map rather than being compared to an unrelated month. The Site tab's site card and trend chart instead show the full reading history (including the most recent reading regardless of season) against the same monthly standard, so nothing is hidden — only the map summary is limited to summer.</p>
         <ul style="margin:4px 0 4px 16px">
           <li><strong>Warm Water Fishery (WWF)</strong> — Delaware DNREC standard; the default for our Delaware sites (Mill Creek, Middle Run, Bogy Run, Cool Run, Fairfield Run, Jenney's Run, A Street).</li>
@@ -362,6 +367,7 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
           <li><strong>NO₃-N &amp; Ortho-P:</strong> % of monthly lab samples exceeding the PADEP standard</li>
           <li><strong>Chloride:</strong> % of monthly samples exceeding 50 mg/L (first harm threshold)</li>
           <li><strong>Water Temp:</strong> % of monthly readings exceeding 24°C</li>
+          <li><strong>Conductivity:</strong> % of monthly readings exceeding 700 µS/cm</li>
         </ul>
         <p>Rankings reward <em>consistent</em> performance over time, not just the most recent reading. A site with one very high reading will rank better than a site that chronically exceeds thresholds.</p>
 
@@ -369,7 +375,7 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
         <p>Winter road-salt surveys (January–February) measure chloride and conductivity at additional sub-basin locations beyond the regular monitoring network. These sites (designated with _A, _B suffixes) appear on the Chloride map layer and in site reports but may have limited data — only the winter snapshot readings.</p>
 
         <div class="sdiv" style="margin-top:12px">Overview Tab — Network Growth Over Time</div>
-        <p>The Overview tab's network-wide trend charts show a genuine watershed-wide signal over time, but they are <strong>not a fixed set of the same sites year to year</strong> — the monitoring network has grown substantially since these programs began. Bacteria sampling grew from <strong>19 sites in 2016 to 32 in 2025</strong>; sensor sites (water temp and conductivity) grew from <strong>29 sites in 2018 to 35 in 2025</strong>; and lab chemistry sites (NO₃-N, Ortho-P, Chloride) grew from just <strong>4 sites in 2018 to 10 in 2025</strong>, with several added in 2025 alone. As a result, a rise or fall in a network trend line can reflect newly added sites rather than a true watershed-wide change — the chart can't distinguish between the two. Treat these charts as a general network-wide signal rather than a strict year-over-year comparison. The <strong>per-site trend charts</strong> on the Site tab track the same location consistently over time and are the more reliable choice for tracking change at a single site.</p>
+        <p>The Overview tab's network-wide trend charts show a genuine watershed-wide signal over time, but they are <strong>not a fixed set of the same sites year to year</strong> — the monitoring network has grown substantially since these programs began. Bacteria sampling grew from <strong>19 sites in 2016 to 32 in 2025</strong>, and laboratory chemistry monitoring (NO₃-N, Ortho-P, and Chloride) expanded from just <strong>4 sites in 2018 to 10 sites in 2025</strong>, with several new locations added in 2025 alone. In addition, our <strong>Salt Snapshot</strong> monitoring program measures chloride concentrations at select locations once or twice each year to assess the impacts of winter road salting on stream health. As a result, a rise or fall in a network trend line can reflect newly added sites rather than a true watershed-wide change — the chart can't distinguish between the two. Treat these charts as a general network-wide signal rather than a strict year-over-year comparison. The <strong>per-site trend charts</strong> on the Site tab track the same location consistently over time and are the more reliable choice for tracking change at a single site.</p>
 
         <div class="sdiv" style="margin-top:12px">Data Sources</div>
         <ul style="margin:4px 0 4px 16px">
@@ -516,6 +522,21 @@ function getLatestCND(site){
   const recs = (DATA.sensor_ts[site.id]||[]).filter(r=>r.CND!==null&&r.CND!==undefined);
   if(!recs.length) return null;
   return recs.reduce((a,b)=> a.Date>b.Date ? a : b).CND;
+}
+// Site Rankings support for Conductivity: computed client-side (and cached) from the
+// same per-site monthly sensor_ts records used for the map layer/Site tab, since this
+// parameter isn't pre-baked into DATA the way the other rank_* lists are.
+function getCndRankings(){
+  if(DATA.rank_cnd) return DATA.rank_cnd;
+  DATA.rank_cnd = DATA.sites.map(s=>{
+    const recs = (DATA.sensor_ts[s.id]||[]).filter(r=>r.CND!==null&&r.CND!==undefined);
+    if(!recs.length) return null;
+    const n = recs.length;
+    const exceed = recs.filter(r=>r.CND>700).length;
+    const latest = recs.reduce((a,b)=> a.Date>b.Date ? a : b).CND;
+    return {site:s.id, name:s.name, pct:Math.round((exceed/n)*1000)/10, n, latest};
+  }).filter(Boolean).sort((a,b)=>b.pct-a.pct);
+  return DATA.rank_cnd;
 }
 function no3nColor(v){
   if(v===null||v===undefined) return '#95a5a6';
@@ -770,6 +791,11 @@ function setLayer(layer){
   // from somewhere other than the dropdown itself.
   const sel = document.getElementById('stat0sel');
   if(sel && sel.value !== layer) sel.value = layer;
+  // Keep the Site Rankings panel showing the same parameter as the map,
+  // so the two views never fall out of sync.
+  const rankSel = document.getElementById('rankParamSel');
+  if(rankSel && rankSel.value !== layer) rankSel.value = layer;
+  if(typeof buildRankings === 'function') buildRankings(layer);
   Object.values(markersMap).forEach(({marker, site})=>{
     const color = markerColor(site, layer);
     const el = marker.getElement();
@@ -1079,6 +1105,7 @@ function buildRankings(param){
     cl:    '% of monthly lab samples exceeding 50 mg/L (first harm threshold). Sorted worst → best.',
     op:    '% of monthly lab samples exceeding 0.1 mg/L (PADEP standard). Sorted worst → best.',
     wt:    '% of monthly readings exceeding 24°C (thermal stress threshold). Sorted worst → best.',
+    cnd:   '% of monthly readings exceeding 700 µS/cm (limestone baseline threshold). Sorted worst → best.',
   };
   const rankData = {
     ecoli: DATA.exceedance,
@@ -1087,6 +1114,7 @@ function buildRankings(param){
     cl:    DATA.rank_cl||[],
     op:    DATA.rank_op||[],
     wt:    DATA.rank_wt||[],
+    cnd:   getCndRankings(),
   };
   const colorFns = {
     ecoli: (e) => ecoliColor(e.latest),
@@ -1095,6 +1123,7 @@ function buildRankings(param){
     cl:    (e) => clColor(e.latest),
     op:    (e) => e.pct>=50?'#c0392b':e.pct>=25?'#e67e22':e.pct>=10?'#f1c40f':'#27ae60',
     wt:    (e) => e.pct>=50?'#c0392b':e.pct>=25?'#e67e22':e.pct>=10?'#f1c40f':'#27ae60',
+    cnd:   (e) => e.pct>=50?'#c0392b':e.pct>=25?'#e67e22':e.pct>=10?'#f1c40f':'#27ae60',
   };
   const latestFmts = {
     ecoli: (e) => e.latest!=null ? Math.round(e.latest)+' CFU' : '—',
@@ -1103,6 +1132,7 @@ function buildRankings(param){
     cl:    (e) => e.latest!=null ? Math.round(e.latest)+' mg/L' : '—',
     op:    (e) => e.latest!=null ? e.latest.toFixed(3)+' mg/L' : '—',
     wt:    (e) => e.latest!=null ? e.latest.toFixed(1)+'°C' : '—',
+    cnd:   (e) => e.latest!=null ? Math.round(e.latest)+' µS/cm' : '—',
   };
   document.getElementById('rankDesc').textContent = descs[param]||'';
   const rows = rankData[param]||[];
