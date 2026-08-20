@@ -194,9 +194,54 @@ header p{font-size:.7rem;opacity:.8;margin-top:1px;}
   .li-row { gap: 7px; }
   .li { font-size: .62rem; }
 }
+
+/* SURVEY GATE */
+#surveyGate{position:fixed;inset:0;background:rgba(13,75,107,.55);z-index:9999;
+  display:flex;align-items:center;justify-content:center;padding:16px;}
+#surveyGate.hidden{display:none;}
+.sg-card{background:#fff;border-radius:12px;max-width:420px;width:100%;
+  padding:22px 22px 18px;box-shadow:0 12px 40px rgba(0,0,0,.3);
+  max-height:90vh;overflow-y:auto;}
+.sg-card h2{font-size:1.02rem;color:var(--primary-d);margin-bottom:4px;}
+.sg-card p.sg-sub{font-size:.78rem;color:var(--muted);margin-bottom:14px;}
+.sg-opt{display:block;border:1px solid var(--border);border-radius:8px;
+  padding:9px 11px;margin-bottom:7px;font-size:.85rem;cursor:pointer;
+  display:flex;align-items:center;gap:9px;transition:border-color .15s,background .15s;}
+.sg-opt:hover{border-color:var(--primary);background:var(--primary-light);}
+.sg-opt input{accent-color:var(--primary);flex-shrink:0;}
+#sgOtherWrap{margin:2px 0 12px 26px;}
+#sgOtherText{width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:6px;
+  font-size:.82rem;font-family:inherit;}
+#sgOtherWrap.hidden{display:none;}
+.sg-submit{width:100%;padding:10px;border:none;border-radius:8px;background:var(--primary);
+  color:#fff;font-size:.88rem;font-weight:700;cursor:pointer;margin-top:6px;}
+.sg-submit:disabled{background:#b7c6cd;cursor:not-allowed;}
+.sg-submit:not(:disabled):hover{background:var(--primary-d);}
+#sgNote{font-size:.66rem;color:var(--muted);margin-top:10px;text-align:center;}
 </style>
 </head>
 <body>
+
+<div id="surveyGate">
+  <div class="sg-card">
+    <h2>Before you view the dashboard…</h2>
+    <p class="sg-sub">What best describes you? (one question, takes a second)</p>
+    <form id="sgForm">
+      <label class="sg-opt"><input type="radio" name="sgAns" value="Municipal representative"> Municipal representative</label>
+      <label class="sg-opt"><input type="radio" name="sgAns" value="Interested citizen"> Interested citizen</label>
+      <label class="sg-opt"><input type="radio" name="sgAns" value="Environmental organization"> Environmental organization</label>
+      <label class="sg-opt"><input type="radio" name="sgAns" value="Academic organization"> Academic organization</label>
+      <label class="sg-opt"><input type="radio" name="sgAns" value="State agency"> State agency</label>
+      <label class="sg-opt"><input type="radio" name="sgAns" value="Federal agency"> Federal agency</label>
+      <label class="sg-opt"><input type="radio" name="sgAns" value="Other"> Other</label>
+      <div id="sgOtherWrap" class="hidden">
+        <input type="text" id="sgOtherText" maxlength="150" placeholder="Please specify…">
+      </div>
+      <button type="submit" class="sg-submit" id="sgSubmit" disabled>Continue to Dashboard</button>
+    </form>
+    <p id="sgNote">Your answer helps us understand who uses this data. No name, email, or other identifying info is collected.</p>
+  </div>
+</div>
 
 <header>
   <div class="hlogo">
@@ -1209,6 +1254,87 @@ function dlAllCSV(){
 }
 
 
+</script>
+
+<script>
+// ===== VISITOR SURVEY GATE =====
+(function(){
+  // Set this to the Apps Script Web App URL after deploying it (see setup
+  // instructions). Until it's set to a real https:// URL, the gate still
+  // works (blocks/unlocks correctly) but responses aren't sent anywhere.
+  var SURVEY_ENDPOINT = "https://script.google.com/macros/s/AKfycbz6-JHmkp6PugKJ_WE_F8Yo2VeMGdwXXs0rV2hpW1Skadb13xORsaupC-RS4FgRg29Fjw/exec";
+
+  var STORAGE_KEY = 'wcwaSurveyAnswered';
+  var gate = document.getElementById('surveyGate');
+
+  if (localStorage.getItem(STORAGE_KEY) === '1') {
+    gate.classList.add('hidden');
+    return; // already answered on this browser — don't ask again
+  }
+  document.body.style.overflow = 'hidden';
+
+  var form = document.getElementById('sgForm');
+  var submitBtn = document.getElementById('sgSubmit');
+  var otherWrap = document.getElementById('sgOtherWrap');
+  var otherText = document.getElementById('sgOtherText');
+
+  function currentChoice(){
+    var checked = form.querySelector('input[name="sgAns"]:checked');
+    return checked ? checked.value : null;
+  }
+  function updateSubmitState(){
+    var choice = currentChoice();
+    var ok = !!choice;
+    if (choice === 'Other') ok = ok && otherText.value.trim().length > 0;
+    submitBtn.disabled = !ok;
+  }
+  form.addEventListener('change', function(e){
+    if (e.target && e.target.name === 'sgAns') {
+      otherWrap.classList.toggle('hidden', e.target.value !== 'Other');
+    }
+    updateSubmitState();
+  });
+  otherText.addEventListener('input', updateSubmitState);
+
+  function unlock(){
+    gate.classList.add('hidden');
+    document.body.style.overflow = '';
+    localStorage.setItem(STORAGE_KEY, '1');
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var choice = currentChoice();
+    if (!choice) return;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    var payload = {
+      response: choice,
+      other: choice === 'Other' ? otherText.value.trim() : ''
+    };
+
+    // Fire-and-forget: a slow or offline connection shouldn't trap a
+    // visitor behind the gate. Unlock once the request has been sent,
+    // with a short failsafe timer in case fetch never resolves.
+    var unlocked = false;
+    function proceed(){ if (!unlocked) { unlocked = true; unlock(); } }
+    var failsafe = setTimeout(proceed, 2500);
+
+    if (SURVEY_ENDPOINT && SURVEY_ENDPOINT.indexOf('http') === 0) {
+      fetch(SURVEY_ENDPOINT, {
+        method: 'POST',
+        body: JSON.stringify(payload) // no explicit Content-Type header -> stays a
+                                       // CORS "simple request", avoiding a preflight
+                                       // that Apps Script web apps don't handle.
+      }).then(function(){ clearTimeout(failsafe); proceed(); })
+        .catch(function(){ clearTimeout(failsafe); proceed(); });
+    } else {
+      clearTimeout(failsafe);
+      proceed();
+    }
+  });
+})();
 </script>
 </body>
 </html>
