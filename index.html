@@ -724,9 +724,9 @@ updateStatsBar('ecoli');
 
 // ===== MAP =====
 const map = L.map('map',{zoomSnap:0.25,zoomDelta:0.5}).setView([39.77,-75.75],11);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-  attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
-  maxZoom:19, subdomains:'abcd'}).addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  maxZoom:19, subdomains:'abc'}).addTo(map);
 
 // Fit to full watershed bounds — deferred so the map container has finished sizing
 const WS_BOUNDS = L.latLngBounds([[39.664,-75.888],[39.892,-75.611]]);
